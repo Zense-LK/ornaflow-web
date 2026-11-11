@@ -48,6 +48,13 @@ function cloudPage(){
  ${!cloudConfig?'<p class="muted">Configure your project first.</p>':cloudSession?
  `<p class="muted">Signed in as <strong>${esc(cloudSession.user?.email||'account')}</strong></p>
  <div class="quick"><button class="btn primary" onclick="cloudLoad()">Refresh cloud data</button><button class="btn" onclick="cloudSignOut()">Sign out</button></div>
+ <div class="panel" style="margin-top:18px;background:#fafbfc"><h2>Account security — Change password</h2><p class="muted">Update the password you use to sign in to OrnaFlow. Enter your current password to confirm it is you.</p>
+ <form id="change-password-form" onsubmit="event.preventDefault();changeCloudPassword(this)">
+ <div class="field"><label for="current-cloud-password">Current password</label><input id="current-cloud-password" name="current_password" type="password" autocomplete="current-password" required></div>
+ <div class="field"><label for="new-cloud-password">New password</label><input id="new-cloud-password" name="new_password" type="password" autocomplete="new-password" minlength="12" required></div>
+ <div class="field"><label for="confirm-cloud-password">Confirm new password</label><input id="confirm-cloud-password" name="confirm_password" type="password" autocomplete="new-password" minlength="12" required></div>
+ <button id="change-cloud-password-button" class="btn primary" type="submit">Update password</button>
+ <p class="muted" role="status" id="change-cloud-password-status" aria-live="polite" style="margin-top:10px">Use at least 12 characters. Your password is not saved in OrnaFlow records.</p></form></div>
  ${!cloudReady?`<div style="margin-top:18px"><h2>Create your business (first user only)</h2><form onsubmit="event.preventDefault();createBusiness(this)"><div class="field"><label>Business name</label><input name="name" required placeholder="e.g. Family Ornaments"></div><button class="btn primary">Create business</button></form><p class="muted">If you already belong to a business, try Refresh cloud data.</p></div>`:
  `<p class="hintcard" style="margin-top:18px">Cloud data is active. Changes made on one device are shared with the other. Refresh happens approximately every 15 seconds.</p><h2 style="margin-top:20px">Invite your second user</h2><form onsubmit="event.preventDefault();addStaff(this)"><div class="field"><label>Confirmed account email</label><input name="email" type="email" required placeholder="staff@example.com"></div><button class="btn">Add staff account</button></form><p class="muted">They must sign up and confirm their email first, without creating a separate business.</p>`
  }`:
@@ -87,6 +94,37 @@ async function cloudLogin(f){
   if(!session.access_token){toast('Check your email, confirm your account, then sign in');return}
   setSession(session);render();await cloudLoad();
  }catch(e){toast(e.message)}
+}
+async function changeCloudPassword(form){
+ const status=document.getElementById('change-cloud-password-status');
+ const button=document.getElementById('change-cloud-password-button');
+ if(!cloudSession?.access_token || !cloudConfig){toast('Sign in to Cloud Mode first');return}
+ const current=form.elements.current_password.value;
+ const next=form.elements.new_password.value;
+ const confirm=form.elements.confirm_password.value;
+ if(next.length<12){status.textContent='New password must have at least 12 characters.';return}
+ if(next!==confirm){status.textContent='New passwords do not match.';return}
+ if(next===current){status.textContent='Choose a password different from your current password.';return}
+ const email=cloudSession.user?.email;
+ if(!email){status.textContent='Account email unavailable. Sign out and back in, then retry.';return}
+ button.disabled=true;
+ status.textContent='Checking your current password…';
+ try{
+   // Validate the current password against Supabase Auth, not local browser state.
+   const verified=await supaFetch('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password:current}});
+   if(!verified.access_token)throw Error('Could not verify the current password');
+   status.textContent='Updating your password…';
+   await supaFetch('/auth/v1/user',{method:'PUT',token:verified.access_token,body:{password:next,current_password:current}});
+   // Preserve the fresh authenticated session, never any plaintext password.
+   setSession(verified);
+   form.reset();
+   status.textContent='Password changed successfully. Use the new password next time you sign in.';
+   toast('Password updated successfully');
+ }catch(error){
+   status.textContent=error.message || 'Password change failed. Please try again.';
+ }finally{
+   button.disabled=false;
+ }
 }
 async function cloudSignOut(){
  try{if(cloudSession?.access_token)await supaFetch('/auth/v1/logout',{method:'POST',token:cloudSession.access_token})}catch{}
