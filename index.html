@@ -183,7 +183,7 @@ const KEY='ornaflow_demo_v1';const seed={products:[{id:1,sku:'ORN-001',name:'Woo
  const maxStock=Math.max(1,...state.products.map(p=>p.stock));
  const chartRows=state.products.slice().sort((x,y)=>y.stock-x.stock).slice(0,5);
  return `<div class="dash-head"><div><div class="eyebrow">${esc(day)} · ORNAFLOW / OVERVIEW</div><h1>${greeting}<span class="accent-dot">.</span></h1><p class="subtitle">A clearer view of your wholesale business.</p></div><button class="btn primary" onclick="navigate('sales')"><span aria-hidden="true">＋</span> New credit sale <span aria-hidden="true">↗</span></button></div>
- <div class="bento-grid">
+ ${!cloudReady?'<div class="notice" role="alert"><strong>Cloud not connected:</strong> the figures below are sample preview data, not your business records. Open <a href="#" onclick="event.preventDefault();navigate(\'cloud\')">Cloud Setup</a> and sign in. Saving stock, sales and payments is disabled until the connection is ready.</div>':''}<div class="bento-grid">
   <article class="bento-card hero-card"><div class="card-top"><span class="tile-label">TOTAL STOCK VALUE</span><span class="tile-icon">↗</span></div><div><div class="hero-number">${fmt(inv)}</div><p>Current inventory at purchase cost</p></div><div class="hero-bottom"><span class="hero-pill">● ${state.products.length} products tracked</span><span class="hero-graphic" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></div></article>
   <article class="bento-card light-card"><div class="card-top"><span class="tile-label">CREDIT OUTSTANDING</span><span class="tile-icon">↗</span></div><div><div class="tile-number">${fmt(dueTotal)}</div><p>To collect from customers</p></div><div class="progress-track"><span style="width:${creditPercent}%"></span></div><div class="tile-bottom"><span>Collected ${creditPercent}% of billed total</span><span>↗</span></div></article>
   <article class="bento-card vivid-card"><div class="card-top"><span class="tile-label">SALES RECORDED</span><span class="tile-icon">↗</span></div><div><div class="tile-number">${fmt(salesTotal)}</div><p>Total invoiced to date</p></div><span class="bubble-info">${state.invoices.length} invoices</span></article>
@@ -215,14 +215,14 @@ dashboard=function(){
  const html=originalDashboard();
  if(!cloudReady)return html;
  return html.replace('Demo data is stored only in this browser. This preview does not connect to the cloud or generate official invoices.',
- 'Connected to Supabase. Products, customers, credit sales and payments are saved in the shared database. Official invoice PDFs are not yet implemented.');
+ 'Connected to Supabase. Products, customers, credit sales and payments use the shared database. PILOT ONLY: official invoice PDFs, corrections, returns and operational checks are still incomplete.');
 };
 function updateCloudBadge(){
  const badge=document.querySelector('.sync');if(!badge)return;
- badge.textContent=cloudReady?(cloudBusy?'● Syncing…':'● Cloud connected'):(cloudConfig?'● Cloud not signed in':'● Local demo');
+ badge.textContent=cloudReady?(cloudBusy?'● Syncing…':'● Cloud connected'):(cloudSession?'● Cloud unavailable':'● Sign in to cloud');
  badge.style.background=cloudReady?'#e8f6ed':'#fff2d6';
  badge.style.color=cloudReady?'#28744b':'#91621a';
- document.querySelector('.sidefoot').textContent=cloudReady?'OrnaFlow v0.2 · Cloud':'OrnaFlow v0.2 · Local demo';
+ document.querySelector('.sidefoot').textContent=cloudReady?'OrnaFlow · Cloud connected':'OrnaFlow · Cloud sign-in required';
 }
 function cloudPage(){
  const config=cloudConfig||{};
@@ -348,22 +348,22 @@ async function cloudMutate(rpc,args,success){
 }
 const localAddProduct=addProduct,localReceiveStock=receiveStock,localAddCustomer=addCustomer,localPostSale=postSale,localAddPayment=addPayment;
 addProduct=async function(f){
- if(!cloudReady)return localAddProduct(f);
+ if(!cloudReady){toast('Cloud not ready — product NOT saved. Sign in under Cloud Setup.');page='cloud';render();return}
  const a=Object.fromEntries(new FormData(f));
  await cloudMutate('orna_add_product',{p_sku:a.sku.trim(),p_name:a.name.trim(),p_category:a.category.trim(),p_price:Number(a.price),p_cost:Number(a.cost),p_opening:Number(a.stock)},'Product saved to cloud');
 };
 receiveStock=async function(f){
- if(!cloudReady)return localReceiveStock(f);
+ if(!cloudReady){toast('Cloud not ready — stock NOT updated. Sign in under Cloud Setup.');page='cloud';render();return}
  const a=Object.fromEntries(new FormData(f));
  await cloudMutate('orna_receive_stock',{p_product_id:Number(a.productId),p_qty:Number(a.qty),p_note:a.note||''},'Stock updated in cloud');
 };
 addCustomer=async function(f){
- if(!cloudReady)return localAddCustomer(f);
+ if(!cloudReady){toast('Cloud not ready — customer NOT saved. Sign in under Cloud Setup.');page='cloud';render();return}
  const a=Object.fromEntries(new FormData(f));
  await cloudMutate('orna_add_customer',{p_name:a.name.trim(),p_phone:a.phone||'',p_credit_days:Number(a.creditDays)},'Customer saved to cloud');
 };
 postSale=async function(){
- if(!cloudReady)return localPostSale();
+ if(!cloudReady){alert('Sale NOT saved. Cloud connection is not ready. Open Cloud Setup and sign in before recording any sale.');page='cloud';render();return}
  const id=Number(document.getElementById('customerSelect')?.value);
  if(!id)return toast('Choose a customer');
  if(!cart.length)return toast('Add products to cart');
@@ -372,13 +372,13 @@ postSale=async function(){
  if(res){pendingSaleOperation=null;cart=[];selectedCustomer='';toast(res.number+' saved to cloud')}
 };
 addPayment=async function(f){
- if(!cloudReady)return localAddPayment(f);
+ if(!cloudReady){alert('Payment NOT saved. Cloud connection is not ready. Open Cloud Setup and sign in.');page='cloud';render();return}
  const a=Object.fromEntries(new FormData(f));
  const res=await cloudMutate('orna_record_payment',{p_customer_id:Number(a.customerId),p_amount:Number(a.amount),p_date:a.date,p_note:a.note||'',p_operation_id:pendingPaymentOperation||(pendingPaymentOperation=crypto.randomUUID())},'Payment saved and allocated to oldest invoices');
  if(res)pendingPaymentOperation=null;
 };
 const localResetDemo=resetDemo;
-resetDemo=function(){if(cloudReady){toast('Cloud data cannot be reset from demo controls');return}localResetDemo()};
+resetDemo=function(){toast('Demo reset disabled on the cloud-connected website. Business data is unchanged.');};
 // Restore account session when reopening the same browser.
 if(cloudConfig&&cloudSession){page='cloud';cloudLoad()}
 else if(cloudConfig){page='cloud'}
