@@ -633,6 +633,119 @@ html[data-theme] .atelier-work-heading h2{font-size:clamp(22px,1.8vw,31px)}
  html[data-theme] .atelier-invoice-row{padding:12px 9px}
 }
 
+
+/* ATELIER DEPTH SYSTEM V1.2 — diffuse ambient illumination + tactile surface stack */
+html[data-theme="dark"] .studio-shell{
+ background:
+  radial-gradient(ellipse 62% 35% at 22% 22%,rgba(61,85,134,.115) 0%,transparent 76%),
+  radial-gradient(ellipse 42% 29% at 86% 45%,rgba(77,95,142,.085) 0%,transparent 80%),
+  #0c1018;
+ box-shadow:0 35px 115px #0006,inset 0 1px #ffffff0c;
+}
+html[data-theme] .atelier-hero-grid{
+ position:relative;
+ isolation:isolate;
+ overflow:visible;
+}
+html[data-theme="dark"] .atelier-hero-grid:before{
+ content:"";position:absolute;pointer-events:none;z-index:-1;
+ inset:-75px -55px -85px;
+ background:
+  radial-gradient(ellipse 38% 58% at 18% 53%,rgba(88,116,221,.32),transparent 80%),
+  radial-gradient(ellipse 35% 64% at 57% 39%,rgba(107,74,163,.19),transparent 80%),
+  radial-gradient(ellipse 30% 48% at 90% 53%,rgba(174,255,48,.15),transparent 80%);
+ filter:blur(29px);
+ opacity:.94;
+}
+html[data-theme] .atelier-hero-tile,
+html[data-theme] .atelier-metric-tile,
+html[data-theme] .atelier-stock-tile{
+ isolation:isolate;
+ overflow:hidden;
+ border:1px solid rgba(174,188,221,.24);
+ box-shadow:
+  0 22px 44px -15px rgba(0,0,0,.58),
+  0 6px 15px -7px rgba(0,0,0,.44),
+  inset 0 1px rgba(255,255,255,.18),
+  inset 0 -1px rgba(0,0,0,.25);
+ transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+html[data-theme="dark"] .atelier-hero-tile{
+ background:
+  radial-gradient(ellipse 100% 90% at 4% -18%,rgba(100,128,193,.32),transparent 68%),
+  radial-gradient(ellipse 86% 60% at 110% 115%,rgba(70,86,137,.15),transparent 78%),
+  linear-gradient(135deg,#2b3344 0%,#1d2431 50%,#141a25 100%);
+}
+html[data-theme="dark"] .atelier-metric-tile{
+ background:
+  radial-gradient(ellipse 86% 70% at 9% -16%,rgba(102,123,184,.27),transparent 78%),
+  linear-gradient(150deg,#282f40 0%,#1a202d 88%);
+}
+html[data-theme="dark"] .atelier-stock-tile{
+ background:
+  radial-gradient(ellipse 95% 75% at 113% 5%,rgba(188,255,58,.16),transparent 78%),
+  linear-gradient(145deg,#2b3241 0%,#202633 100%);
+}
+html[data-theme] .atelier-hero-tile:before,
+html[data-theme] .atelier-metric-tile:before,
+html[data-theme] .atelier-stock-tile:before{
+ content:"";position:absolute;inset:0 0 auto;height:49%;
+ background:linear-gradient(180deg,rgba(255,255,255,.075),transparent);
+ border-radius:inherit;
+ pointer-events:none;
+ z-index:-1;
+}
+html[data-theme] .atelier-hero-tile:hover,
+html[data-theme] .atelier-metric-tile:hover,
+html[data-theme] .atelier-stock-tile:hover{
+ transform:translateY(-3px);
+ border-color:rgba(188,207,239,.41);
+ box-shadow:0 30px 56px -18px #000b,0 7px 18px -8px #0008,inset 0 1px #ffffff3a;
+}
+html[data-theme="dark"] .atelier-register{
+ position:relative;
+ isolation:isolate;
+ box-shadow:0 25px 65px -22px #010511ae,0 5px 18px -7px #0007,inset 0 1px #fff;
+}
+html[data-theme="dark"] .atelier-invoice-detail{
+ border:1px solid rgba(166,189,230,.25);
+ background:
+  radial-gradient(ellipse 80% 64% at 10% -12%,rgba(114,139,206,.23),transparent 80%),
+  radial-gradient(ellipse 70% 70% at 105% 110%,rgba(74,90,152,.13),transparent 75%),
+  linear-gradient(145deg,#303848 0%,#222938 48%,#161d29 100%);
+ box-shadow:0 14px 30px -14px #0509137d,inset 0 1px rgba(255,255,255,.22),inset 1px 0 rgba(255,255,255,.06);
+}
+html[data-theme="dark"] .atelier-invoice-stats>div,
+html[data-theme="dark"] .panel:not(.atelier-records-paper){
+ background:
+  radial-gradient(ellipse 90% 80% at 0% -18%,rgba(103,121,173,.12),transparent 75%),
+  linear-gradient(150deg,#252c3a,#1b222e);
+ box-shadow:0 15px 34px -15px #0009,inset 0 1px #ffffff18;
+ border-color:#3a4455;
+}
+html[data-theme="dark"] .sale-layout>.panel:nth-child(2){
+ background:radial-gradient(ellipse at 12% 0%,rgba(103,128,191,.23),transparent 70%),linear-gradient(140deg,#293241,#19202b);
+ box-shadow:0 24px 54px -20px #000a,inset 0 1px #ffffff24;
+ border-color:#465268;
+}
+html[data-theme="light"] .atelier-hero-grid:before{
+ content:"";position:absolute;z-index:-1;pointer-events:none;inset:-48px -30px -65px;
+ background:radial-gradient(ellipse at 20% 40%,#aec3ef7a,transparent 65%),radial-gradient(ellipse at 87% 44%,#c7eea554,transparent 64%);
+ filter:blur(27px);
+}
+html[data-theme="light"] .atelier-hero-tile,
+html[data-theme="light"] .atelier-metric-tile,
+html[data-theme="light"] .atelier-stock-tile{
+ box-shadow:0 22px 48px -22px #25374f60,0 6px 18px -9px #27344a2c,inset 0 1px #ffffff36;
+}
+@media(max-width:900px){
+ html[data-theme="dark"] .atelier-hero-grid:before{inset:-28px -9px -35px;filter:blur(16px);opacity:.65}
+ html[data-theme] .atelier-hero-tile:hover,html[data-theme] .atelier-metric-tile:hover,html[data-theme] .atelier-stock-tile:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-theme] .atelier-hero-tile,html[data-theme] .atelier-metric-tile,html[data-theme] .atelier-stock-tile{transition:none}
+}
+
 </style></head><body>
 <div class="app studio-app">
  <div class="studio-shell">
