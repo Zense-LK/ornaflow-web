@@ -482,6 +482,21 @@ html[data-theme] .atelier-endnote{display:flex;justify-content:space-between;gap
  html[data-theme] .atelier-endnote span:last-child{display:none}
 }
 
+
+/* Keep operational connection health visible in precision chrome. */
+html[data-theme] .sync[data-state="online"]{background:#20352b!important;color:#bcf0c3!important;border-color:#3b6049!important}
+html[data-theme] .sync[data-state="offline"]{background:#343021!important;color:#f7d79c!important;border-color:#60543a!important}
+html[data-theme] .sync[data-state="unavailable"]{background:#422a2e!important;color:#ffc4c4!important;border-color:#6a454b!important}
+@media(max-width:1260px){html[data-theme] .sync{font-size:10px!important}}
+@media(max-width:900px){html[data-theme] .nav .navlabel{display:block;font-size:10px}}
+@media(max-width:580px){
+ html[data-theme] .sync{font-size:0!important}
+ html[data-theme] .sync:before{content:"●";font-size:12px}
+ html[data-theme] .sync[data-state="online"]:before{color:#b8f3bb}
+ html[data-theme] .sync[data-state="offline"]:before{color:#f1c576}
+ html[data-theme] .sync[data-state="unavailable"]:before{color:#ffaaa9}
+}
+
 </style></head><body>
 <div class="app studio-app">
  <div class="studio-shell">
@@ -740,6 +755,9 @@ dashboard=function(){
 function updateCloudBadge(){
  const badge=document.querySelector('.sync');if(!badge)return;
  badge.textContent=cloudReady?(cloudBusy?'● Syncing…':'● Cloud connected'):(cloudSession?'● Cloud unavailable':'● Sign in to cloud');
+ badge.dataset.state=cloudReady?'online':(cloudSession?'unavailable':'offline');
+ badge.title=badge.textContent;
+ badge.setAttribute('aria-label',badge.textContent);
  badge.style.background=cloudReady?'#e8f6ed':'#fff2d6';
  badge.style.color=cloudReady?'#28744b':'#91621a';
  document.querySelector('.sidefoot').textContent=cloudReady?'OrnaFlow · Cloud connected':'OrnaFlow · Cloud sign-in required';
