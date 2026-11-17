@@ -4,7 +4,7 @@
 (function(){
  try {
   const choice=localStorage.getItem('ornaflow-theme-v1');
-  const theme=choice==='dark'?'dark':'light';
+  const theme=choice==='light'?'light':'dark';
   document.documentElement.dataset.theme=theme;
   document.documentElement.style.colorScheme=theme;
  }catch(e){document.documentElement.dataset.theme='light'}
@@ -161,7 +161,158 @@ html[data-theme="dark"] .audit-json{background:#131519;color:#e7eaf0}
 .delete-danger:hover{background:#972e35!important}
 html[data-theme="dark"] .delete-action{color:#ff9c9c!important;background:#44272d!important}
 html[data-theme="dark"] .delete-danger{background:#c4424b!important;color:white!important;border-color:#c4424b!important}
-</style></head><body><div class="app"><aside class="sidebar"><div class="brand">OrnaFlow</div><div class="subbrand">Wholesale management</div><nav class="nav" id="nav"></nav><div class="sidefoot">Prototype v0.1 · Local demo</div></aside><main class="main"><header class="topbar"><div><strong id="page-label">Dashboard</strong> <small> / Overview</small></div><div class="topright"><button class="theme-toggle" id="theme-toggle" type="button" onclick="toggleOrnaTheme()" aria-label="Switch to dark mode" aria-pressed="false" title="Switch theme"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-label">Dark mode</span></button><span class="sync">● Local demo</span><span class="avatar">O</span></div></header><section class="content" id="view"></section></main></div><div class="modalbg" id="modalbg"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
+
+/* ORNAFLOW ATELIER — interface language v1
+   Three material surfaces: graphite chrome / elevated ink / paper register.
+   The lime accent is reserved for active paths and primary actions. */
+html[data-theme="dark"]{
+ --st-bg:#0c1018;--st-header:#111620;--st-elev:#1b202c;--st-elev2:#242a38;--st-line:#303747;--st-ink:#f5f7f9;--st-soft:#a0a7b6;--st-tiny:#808a9c;--st-lime:#c2ff27;--st-lime-ink:#141b0b;
+ --st-paper:#f6f7f7;--st-paper2:#eceef1;--st-paper-ink:#151a22;--st-paper-soft:#727988;--st-paper-line:#dfe2e7;--st-shadow:0 16px 48px #00000028;
+}
+html[data-theme="light"]{
+ --st-bg:#e9ebee;--st-header:#f9fafc;--st-elev:#ffffff;--st-elev2:#f0f2f5;--st-line:#dfe2e8;--st-ink:#1c2330;--st-soft:#626c7b;--st-tiny:#86909d;--st-lime:#b2ed20;--st-lime-ink:#17200b;
+ --st-paper:#ffffff;--st-paper2:#f4f5f7;--st-paper-ink:#151a22;--st-paper-soft:#727988;--st-paper-line:#e1e4e9;--st-shadow:0 14px 44px #19233310;
+}
+html[data-theme] {background:var(--st-bg);color:var(--st-ink);font-family:Inter,"Segoe UI",ui-sans-serif,system-ui,Arial,sans-serif}
+html[data-theme] body{background:var(--st-bg);color:var(--st-ink);min-width:320px}
+html[data-theme="dark"] body{background:radial-gradient(1100px 580px at 78% -14%,#222a39 0%,transparent 70%),var(--st-bg)}
+html[data-theme] .studio-app{display:block;min-height:100dvh;background:transparent}
+html[data-theme] .studio-shell{width:min(1520px,calc(100% - 52px));min-height:calc(100dvh - 48px);margin:24px auto;border:1px solid var(--st-line);border-radius:28px;background:var(--st-bg);box-shadow:0 24px 90px #070b151c;overflow:clip}
+html[data-theme] .studio-header{position:relative;width:auto;height:80px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 27px;background:var(--st-header);border:0;border-bottom:1px solid var(--st-line);z-index:10;box-shadow:none}
+html[data-theme] .studio-identity{display:flex;align-items:center;gap:10px;flex:0 0 auto;min-width:173px}
+html[data-theme] .studio-emblem{width:30px;height:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:3px;transform:rotate(-13deg)}
+html[data-theme] .studio-emblem span{display:block;background:var(--st-lime);border-radius:2px 9px 2px 9px}
+html[data-theme] .studio-emblem span:nth-child(2){transform:rotate(38deg);border-radius:9px 2px 9px 2px}
+html[data-theme] .studio-emblem span:nth-child(3){transform:rotate(38deg);border-radius:9px 2px 9px 2px}
+html[data-theme] .brand{font-size:19px;line-height:1.1;letter-spacing:-.85px;font-weight:800;margin:0;color:var(--st-ink)}
+html[data-theme] .brand:before{content:none}
+html[data-theme] .subbrand{display:block;margin:5px 0 0;font-size:8px;font-weight:750;letter-spacing:.17em;color:var(--st-tiny)}
+html[data-theme] .nav{display:flex;align-items:center;justify-content:center;gap:3px;flex:1;min-width:0;max-width:790px;padding:4px;background:var(--st-elev);border:1px solid var(--st-line);border-radius:99px;overflow-x:auto;scrollbar-width:none}
+html[data-theme] .nav::-webkit-scrollbar{display:none}
+html[data-theme] .nav button{width:auto;flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 12px;min-height:38px;border:0;border-radius:90px;background:transparent;color:var(--st-soft);font-size:11px;letter-spacing:-.05px;font-weight:650;white-space:nowrap;box-shadow:none}
+html[data-theme] .nav button:hover{background:var(--st-elev2);color:var(--st-ink);transform:none}
+html[data-theme] .nav button.active{background:var(--st-lime);color:var(--st-lime-ink);box-shadow:0 2px 6px #00000016}
+html[data-theme] .nav .ico{display:none}
+html[data-theme] .topright{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex:0 0 auto}
+html[data-theme] .sync{display:inline-flex;align-items:center;min-height:34px;padding:8px 10px!important;font-size:10px;letter-spacing:.01em;font-weight:760;background:var(--st-elev2)!important;color:var(--st-soft)!important;border:1px solid var(--st-line);border-radius:100px!important}
+html[data-theme] .theme-toggle{height:36px;min-width:36px;display:flex;justify-content:center;align-items:center;gap:5px;background:var(--st-elev)!important;color:var(--st-ink)!important;border:1px solid var(--st-line)!important;border-radius:50%;box-shadow:none;padding:7px}
+html[data-theme] .theme-toggle .theme-label{display:none}
+html[data-theme] .theme-glyph{font-size:17px}
+html[data-theme] .avatar{width:36px;height:36px;border-radius:50%;background:var(--st-lime);color:var(--st-lime-ink);border:2px solid var(--st-bg);font-size:12px;font-weight:800}
+html[data-theme] .main{background:transparent;min-width:0;padding:0}
+html[data-theme] .topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;background:transparent;border:0}
+html[data-theme] .studio-breadcrumb{display:flex;align-items:center;gap:11px;font-size:11px;color:var(--st-soft)}
+html[data-theme] .studio-breadcrumb strong{color:var(--st-ink);font-weight:710}
+html[data-theme] .studio-breadcrumb-prefix{letter-spacing:.12em;font-size:9px;font-weight:790;color:var(--st-tiny)}
+html[data-theme] .breadcrumb-separator{color:var(--st-tiny)}
+html[data-theme] .studio-top-meta{color:var(--st-tiny);font-size:10px}
+html[data-theme] .sidefoot{position:static;display:block;color:var(--st-tiny);font-size:10px}
+html[data-theme] .content{padding:0 34px 40px;max-width:none;margin:auto;min-height:calc(100dvh - 190px)}
+html[data-theme] .heading{gap:18px;margin:7px 0 28px}
+html[data-theme] .heading h1{font-size:clamp(29px,3.2vw,42px);font-weight:760;letter-spacing:-1.9px;color:var(--st-ink);margin:0 0 9px}
+html[data-theme] .heading .subtitle{font-size:12px;color:var(--st-soft)}
+html[data-theme] .heading>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+html[data-theme] .btn{background:var(--st-elev2);border:1px solid var(--st-line);border-radius:12px;padding:11px 15px;color:var(--st-ink);font-size:12px;font-weight:710;box-shadow:none;transition:background .14s,border-color .14s,color .14s}
+html[data-theme] .btn:hover{background:var(--st-elev);filter:none;transform:none;box-shadow:none;border-color:var(--st-soft)}
+html[data-theme] .btn.primary{background:var(--st-lime);border-color:var(--st-lime);color:var(--st-lime-ink)}
+html[data-theme] .btn.primary:hover{background:#d9ff75;border-color:#d9ff75}
+html[data-theme] .btn:focus-visible,html[data-theme] button:focus-visible{outline:2px solid var(--st-lime);outline-offset:3px}
+html[data-theme] .panel,html[data-theme] .metric{background:var(--st-elev);border:1px solid var(--st-line);border-radius:22px;color:var(--st-ink);box-shadow:none;padding:23px}
+html[data-theme] .panel h2{color:var(--st-ink);font-weight:720}
+html[data-theme] .panel .muted,html[data-theme] .muted,html[data-theme] .metric .label,html[data-theme] .metric .hint{color:var(--st-soft)}
+html[data-theme] .metric .number{color:var(--st-ink);letter-spacing:-1.1px}
+html[data-theme] .field label{color:var(--st-soft);font-size:11px;font-weight:730;letter-spacing:.01em}
+html[data-theme] .field input,html[data-theme] .field select,html[data-theme] .search,html[data-theme] .qty,html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),html[data-theme="dark"] select{background:var(--st-elev2);border:1px solid var(--st-line);border-radius:12px;color:var(--st-ink);min-height:43px;padding:10px 12px;font-size:12px}
+html[data-theme] input::placeholder{color:var(--st-tiny);opacity:1}
+html[data-theme] select{color-scheme:dark}
+html[data-theme="light"] select{color-scheme:light}
+html[data-theme] .smallbtn{background:var(--st-elev2);color:var(--st-ink);border:1px solid var(--st-line);border-radius:10px;font-size:11px;padding:8px 11px}
+html[data-theme] .smallbtn:hover{background:var(--st-line)}
+html[data-theme] .chip{font-size:10px;padding:6px 10px;border-radius:99px;background:#213b2b;color:#a8e9b9}
+html[data-theme] .chip.warn{background:#49341f;color:#ffce83}
+html[data-theme] .notice{background:var(--st-elev2);border:1px solid var(--st-line);border-left:3px solid var(--st-lime);color:var(--st-soft);border-radius:12px;padding:14px 17px}
+html[data-theme] .hintcard{background:var(--st-elev2);color:var(--st-soft);border-radius:12px}
+html[data-theme] .tablewrap table{font-size:12px}
+html[data-theme] th{background:var(--st-elev2);color:var(--st-soft);letter-spacing:.08em;font-size:10px}
+html[data-theme] td,html[data-theme] th{border-bottom:1px solid var(--st-line);padding:15px 14px}
+html[data-theme] td{color:var(--st-ink)}
+html[data-theme] tr:hover td{background:var(--st-elev2)}
+html[data-theme] .item-row{border-bottom-color:var(--st-line)}
+html[data-theme] .modalbg{background:#03060db5;backdrop-filter:blur(10px)}
+html[data-theme] .modal{background:var(--st-elev);border:1px solid var(--st-line);border-radius:22px;color:var(--st-ink);box-shadow:0 32px 130px #03050a9c}
+html[data-theme] .toast{background:var(--st-lime);color:var(--st-lime-ink);font-weight:740;box-shadow:0 10px 30px #0005}
+html[data-theme] .sale-layout .panel{height:fit-content}
+html[data-theme] #cartRows .item-row{border-color:var(--st-line)}
+html[data-theme] .summaryline.total{border-top-color:var(--st-line)}
+html[data-theme] .quick{gap:8px}
+html[data-theme="light"] .chip{background:#e3f0e6;color:#285b37}
+html[data-theme="light"] .chip.warn{background:#fff0d8;color:#9a6b1b}
+html[data-theme] .audit-json{background:var(--st-elev2);color:var(--st-ink)}
+html[data-theme] .delete-action{background:#522d36!important;color:#ffafb3!important}
+html[data-theme] .delete-danger{background:#c54952!important;color:white!important}
+@media(max-width:1260px){
+ html[data-theme] .studio-header{padding:0 20px;gap:10px}
+ html[data-theme] .studio-identity{min-width:143px}
+ html[data-theme] .nav button{padding:9px 10px;font-size:10px}
+ html[data-theme] .sync{font-size:0}
+ html[data-theme] .sync::first-letter{font-size:11px}
+}
+@media(max-width:900px){
+ html[data-theme] .studio-shell{width:100%;margin:0;border-radius:0;min-height:100dvh;border:0}
+ html[data-theme] .studio-header{height:72px;padding:0 18px}
+ html[data-theme] .studio-identity{min-width:0}
+ html[data-theme] .nav{position:fixed;bottom:0;left:0;right:0;max-width:none;justify-content:flex-start;gap:4px;min-height:76px;height:calc(76px + env(safe-area-inset-bottom));padding:7px 10px calc(7px + env(safe-area-inset-bottom));background:var(--st-header);border:0;border-top:1px solid var(--st-line);border-radius:0;box-shadow:0 -12px 40px #0004;z-index:30}
+ html[data-theme] .nav button{min-width:76px;display:flex;flex-direction:column;gap:4px;padding:7px 7px;min-height:55px;border-radius:12px;font-size:10px}
+ html[data-theme] .nav .ico{display:block;font-size:16px;width:auto}
+ html[data-theme] .content{padding:0 18px calc(105px + env(safe-area-inset-bottom));min-height:auto}
+ html[data-theme] .topbar{height:52px;padding:0 18px}
+ html[data-theme] .main{padding-bottom:0}
+ html[data-theme] .sidefoot{font-size:9px}
+ html[data-theme] .studio-header .topright{margin-left:auto}
+ html[data-theme] .sync{font-size:10px}
+}
+@media(max-width:580px){
+ html[data-theme] .studio-header{height:65px;padding:0 14px}
+ html[data-theme] .studio-emblem{width:26px;height:26px}
+ html[data-theme] .brand{font-size:18px}
+ html[data-theme] .subbrand{font-size:7px}
+ html[data-theme] .topright{gap:5px}
+ html[data-theme] .sync{font-size:0!important;min-width:30px;min-height:30px;padding:4px 9px!important}
+ html[data-theme] .sync::before{content:"●";font-size:12px}
+ html[data-theme] .avatar{height:32px;width:32px}
+ html[data-theme] .theme-toggle{height:32px;width:32px;min-width:32px}
+ html[data-theme] .topbar{height:48px;padding:0 15px}
+ html[data-theme] .studio-top-meta{display:none}
+ html[data-theme] .content{padding:0 14px calc(100px + env(safe-area-inset-bottom))}
+ html[data-theme] .heading{align-items:flex-start}
+ html[data-theme] .heading h1{font-size:30px}
+ html[data-theme] .panels,.sale-layout{grid-template-columns:1fr}
+ html[data-theme] .panel{padding:18px;border-radius:18px}
+ html[data-theme] .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px}
+ html[data-theme] .metric{padding:17px;border-radius:17px}
+ html[data-theme] .metric .number{font-size:21px}
+}
+@media(prefers-reduced-motion:reduce){html[data-theme] *,html[data-theme] *:before,html[data-theme] *:after{animation:none!important;transition:none!important}}
+
+</style></head><body>
+<div class="app studio-app">
+ <div class="studio-shell">
+  <header class="sidebar studio-header">
+   <div class="studio-identity" role="banner"><span class="studio-emblem" aria-hidden="true"><span></span><span></span><span></span><span></span></span><div><div class="brand">OrnaFlow</div><div class="subbrand">WHOLESALE / STUDIO</div></div></div>
+   <nav class="nav" id="nav" aria-label="Main navigation"></nav>
+   <div class="topright">
+    <span class="sync" role="status">● Sign in to cloud</span>
+    <button class="theme-toggle" id="theme-toggle" type="button" onclick="toggleOrnaTheme()" aria-label="Switch theme" aria-pressed="false" title="Switch theme"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-label">Theme</span></button>
+    <span class="avatar" title="OrnaFlow account">O</span>
+   </div>
+  </header>
+  <main class="main">
+   <div class="topbar"><div class="studio-breadcrumb"><span class="studio-breadcrumb-prefix">WORKSPACE</span><span class="breadcrumb-separator">/</span><strong id="page-label">Overview</strong></div><div class="studio-top-meta"><span class="sidefoot">OrnaFlow · Business workspace</span></div></div>
+   <section class="content" id="view"></section>
+  </main>
+ </div>
+</div>
+<div class="modalbg" id="modalbg"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
 <script>
 const ORNA_THEME_KEY='ornaflow-theme-v1';
 function updateOrnaThemeControl(){
