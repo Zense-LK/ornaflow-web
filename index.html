@@ -154,6 +154,13 @@ html[data-theme="dark"] .bento-card .recent-copy strong{color:var(--dark-text)}
 /* Protected Corrections */
 .audit-json{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:320px;overflow:auto;background:#f2f3f5;color:#202124;padding:16px;border-radius:12px}
 html[data-theme="dark"] .audit-json{background:#131519;color:#e7eaf0}
+
+.delete-action{color:#ac373b!important;background:#fff0ef!important}
+.delete-action:hover{background:#ffe2df!important}
+.delete-danger{background:#b83b42!important;color:#fff!important;border:1px solid #b83b42!important}
+.delete-danger:hover{background:#972e35!important}
+html[data-theme="dark"] .delete-action{color:#ff9c9c!important;background:#44272d!important}
+html[data-theme="dark"] .delete-danger{background:#c4424b!important;color:white!important;border-color:#c4424b!important}
 </style></head><body><div class="app"><aside class="sidebar"><div class="brand">OrnaFlow</div><div class="subbrand">Wholesale management</div><nav class="nav" id="nav"></nav><div class="sidefoot">Prototype v0.1 · Local demo</div></aside><main class="main"><header class="topbar"><div><strong id="page-label">Dashboard</strong> <small> / Overview</small></div><div class="topright"><button class="theme-toggle" id="theme-toggle" type="button" onclick="toggleOrnaTheme()" aria-label="Switch to dark mode" aria-pressed="false" title="Switch theme"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-label">Dark mode</span></button><span class="sync">● Local demo</span><span class="avatar">O</span></div></header><section class="content" id="view"></section></main></div><div class="modalbg" id="modalbg"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
 <script>
 const ORNA_THEME_KEY='ornaflow-theme-v1';
@@ -534,15 +541,15 @@ function managementPage(){
  const d=managementData;
  return heading('Protected corrections','Signed in as '+esc(managementEditor)+' · Every saved change is audited.',
  `<div class="quick"><button class="btn" onclick="managementRefresh()">Refresh records</button><button class="btn" onclick="managementLock()">Lock page</button></div>`)+
- `<div class="notice"><strong>Correction mode:</strong> Financial records are not deleted. Invoice edits adjust stock and totals. Payment adjustments preserve allocation consistency. Cash-sale amounts cannot be changed here.</div>
+ `<div class="notice"><strong>Correction mode:</strong> Deletes are audited: products are archived, unpaid invoices are voided with stock restored, and eligible standalone payments can be removed. Paid invoices and sale-linked payments cannot be deleted here.</div>
  <div class="panel"><div class="panelhead"><h2>Inventory · Edit products & stock</h2><span class="muted">${d.products.length} products</span></div><div class="tablewrap"><table><thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Selling price</th><th>Action</th></tr></thead><tbody>
- ${d.products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.sku)}</td><td>${p.stock}</td><td>${fmt(p.price)}</td><td><button class="smallbtn" onclick="managementEditProduct(${p.id})">Edit</button></td></tr>`).join('')||'<tr><td colspan="5">No products</td></tr>'}
+ ${d.products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.sku)}</td><td>${p.stock}</td><td>${fmt(p.price)}</td><td><div class="quick"><button class="smallbtn" onclick="managementEditProduct(${p.id})">Edit</button><button class="smallbtn delete-action" onclick="managementDeleteDialog('product',${p.id})">Delete</button></div></td></tr>`).join('')||'<tr><td colspan="5">No products</td></tr>'}
  </tbody></table></div></div>
  <div class="panel"><div class="panelhead"><h2>Invoices · Correct item quantities</h2><span class="muted">${d.invoices.length} invoices</span></div><div class="tablewrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Total</th><th>Type</th><th>Action</th></tr></thead><tbody>
- ${d.invoices.map(i=>`<tr><td>${esc(i.number)}</td><td>${esc(customerName(i.customerId))}</td><td>${fmt(i.total)}</td><td>${esc(i.saleType||'credit')}</td><td><button class="smallbtn" onclick="managementEditInvoice(${i.id})">Edit lines</button></td></tr>`).join('')||'<tr><td colspan="5">No invoices</td></tr>'}
+ ${d.invoices.map(i=>`<tr><td>${esc(i.number)}</td><td>${esc(customerName(i.customerId))}</td><td>${fmt(i.total)}</td><td>${esc(i.saleType||'credit')}</td><td><div class="quick"><button class="smallbtn" onclick="managementEditInvoice(${i.id})">Edit lines</button><button class="smallbtn delete-action" onclick="managementDeleteDialog('invoice',${i.id})">Delete</button></div></td></tr>`).join('')||'<tr><td colspan="5">No invoices</td></tr>'}
  </tbody></table></div></div>
  <div class="panel"><div class="panelhead"><h2>Payments · Correct amounts & details</h2><span class="muted">${d.payments.length} payments</span></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Customer</th><th>Kind</th><th>Amount</th><th>Action</th></tr></thead><tbody>
- ${d.payments.map(p=>`<tr><td>${esc(p.date)}</td><td>${esc(customerName(p.customerId))}</td><td>${esc(p.kind)}</td><td>${fmt(p.amount)}</td><td><button class="smallbtn" onclick="managementEditPayment(${p.id})">Edit</button></td></tr>`).join('')||'<tr><td colspan="5">No payments</td></tr>'}
+ ${d.payments.map(p=>`<tr><td>${esc(p.date)}</td><td>${esc(customerName(p.customerId))}</td><td>${esc(p.kind)}</td><td>${fmt(p.amount)}</td><td><div class="quick"><button class="smallbtn" onclick="managementEditPayment(${p.id})">Edit</button><button class="smallbtn delete-action" onclick="managementDeleteDialog('payment',${p.id})">Delete</button></div></td></tr>`).join('')||'<tr><td colspan="5">No payments</td></tr>'}
  </tbody></table></div></div>
  <div class="panel"><div class="panelhead"><h2>Change history</h2><span class="muted">Latest 100 changes</span></div><div class="tablewrap"><table><thead><tr><th>When</th><th>Editor</th><th>Record</th><th>Reason</th><th>Details</th></tr></thead><tbody>
  ${d.audit.map(a=>`<tr><td>${esc(new Date(a.when).toLocaleString('en-LK'))}</td><td><strong>${esc(a.editor)}</strong></td><td>${esc(a.entity)} #${a.entityId}</td><td>${esc(a.reason)}</td><td><button class="smallbtn" onclick="managementAuditDetails(${a.id})">Before / After</button></td></tr>`).join('')||'<tr><td colspan="5">No corrections recorded</td></tr>'}
@@ -587,6 +594,30 @@ function managementEditPayment(id){
  ${managementReasonField()}
  <p class="muted">${fixed?'The amount of a sale-linked payment is locked; date, method and note can be corrected.':'Changing an amount recalculates the payment allocations. Excess ordinary collections are rejected.'}</p>
  <div class="actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn primary">Save payment correction</button></div></form>`);
+}
+
+function managementDeleteDialog(kind,id){
+ if(!managementData||!managementPassword)return;
+ const collection=kind==='product'?managementData.products:kind==='invoice'?managementData.invoices:kind==='payment'?managementData.payments:null;
+ const item=collection?.find(x=>x.id===id);
+ if(!item)return;
+ const label=kind==='product'?item.name:kind==='invoice'?item.number:'Payment #'+id;
+ const explanation=kind==='product'?'The product will be removed from active inventory. Historical sales and stock movements remain.':
+ kind==='invoice'?'The invoice will be voided and stock returned. Invoices with applied payments cannot be voided here.':
+ 'Standalone payments can be deleted and balances recalculated. Sale-linked payments cannot be deleted separately.';
+ modal(`<h2>Delete ${esc(kind)}?</h2><div class="notice">${esc(explanation)}</div>
+ <p><strong>${esc(label)}</strong></p>
+ <form onsubmit="event.preventDefault();managementSubmitDelete(this,'${kind}',${id})">
+ <div class="field"><label>Reason for deletion (required)</label><input name="reason" required minlength="5" maxlength="500" placeholder="Why is this record being removed?"></div>
+ <div class="field"><label>Type DELETE to confirm</label><input name="confirmation" required autocomplete="off" pattern="DELETE" placeholder="DELETE"></div>
+ <div class="actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn delete-danger" type="submit">Confirm deletion</button></div></form>`);
+}
+function managementSubmitDelete(form,kind,id){
+ const a=Object.fromEntries(new FormData(form));
+ if(a.confirmation!=='DELETE'){toast('Type DELETE to confirm');return}
+ const actions={product:'orna_delete_product',invoice:'orna_delete_invoice',payment:'orna_delete_payment'};
+ if(!actions[kind])return;
+ managementMutation(actions[kind],{p_id:id,p_reason:a.reason});
 }
 function managementAuditDetails(id){
  const a=managementData?.audit.find(x=>x.id===id);if(!a)return;
