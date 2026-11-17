@@ -531,6 +531,108 @@ html[data-theme] .atelier-records-search{width:100%;max-width:none;min-width:0}}
 html[data-theme] .atelier-records-heading h2{font-size:20px}
 html[data-theme] .atelier-records-paper th,html[data-theme] .atelier-records-paper td{padding:12px 11px}}
 
+
+/* OrnaFlow Atelier / Fluid viewport sizing fix — v1.1
+   Desktop workspace fills browser viewport rather than staying boxed at 1520px. */
+html,body{width:100%;min-height:100%;overflow-x:hidden}
+html[data-theme] .studio-app{width:100%;min-width:0;min-height:100dvh}
+html[data-theme] .studio-shell{
+ width:calc(100% - 32px);
+ max-width:none;
+ min-width:0;
+ min-height:calc(100dvh - 32px);
+ margin:16px auto;
+ border-radius:24px;
+}
+html[data-theme] .studio-header{width:100%;min-width:0;gap:clamp(10px,1.3vw,24px);padding-inline:clamp(16px,2.1vw,35px)}
+html[data-theme] .studio-identity{min-width:clamp(135px,12vw,190px)}
+html[data-theme] .nav{
+ max-width:none;
+ min-width:0;
+ flex:1 1 auto;
+ width:auto;
+ justify-content:center;
+}
+html[data-theme] .nav button{font-size:clamp(11px,.83vw,13px);padding-inline:clamp(10px,1.05vw,18px)}
+html[data-theme] .main{min-width:0;width:100%}
+html[data-theme] .topbar{padding-inline:clamp(20px,2.35vw,46px)}
+html[data-theme] .content{width:100%;max-width:none;padding-inline:clamp(20px,2.35vw,46px)}
+html[data-theme] .atelier-hero-grid{
+ grid-template-columns:minmax(0,5fr) minmax(0,4fr) minmax(0,3fr);
+ gap:clamp(12px,1vw,20px);
+}
+html[data-theme] .atelier-register-body{
+ grid-template-columns:minmax(0,38%) minmax(0,62%);
+ gap:clamp(12px,1vw,19px);
+}
+html[data-theme] .atelier-hero-tile,
+html[data-theme] .atelier-metric-tile,
+html[data-theme] .atelier-stock-tile{min-height:clamp(240px,22vh,345px)}
+html[data-theme] .atelier-register{padding:clamp(20px,1.6vw,29px)}
+html[data-theme] .atelier-register-body{min-height:clamp(360px,43vh,630px)}
+html[data-theme] .atelier-invoice-list{max-height:min(62vh,700px)}
+html[data-theme] .atelier-page-intro{margin-bottom:clamp(22px,2.1vw,37px)}
+html[data-theme] .atelier-page-intro h1{font-size:clamp(38px,3.4vw,60px)}
+html[data-theme] .atelier-hero-value{font-size:clamp(36px,3.4vw,60px)}
+html[data-theme] .atelier-metric-value{font-size:clamp(30px,2.55vw,48px)}
+html[data-theme] .atelier-stock-number{font-size:clamp(45px,4vw,73px)}
+html[data-theme] .atelier-invoice-stats strong{font-size:clamp(24px,2.3vw,43px)}
+html[data-theme] .atelier-invoice-detail{min-height:360px}
+html[data-theme] .atelier-register-head h2{font-size:clamp(22px,1.7vw,30px)}
+html[data-theme] .atelier-invoice-row{padding:clamp(13px,1.05vw,19px) clamp(12px,1vw,18px)}
+html[data-theme] .atelier-row-main strong,
+html[data-theme] .atelier-row-end strong{font-size:clamp(12px,.9vw,15px)}
+html[data-theme] .atelier-row-main small,
+html[data-theme] .atelier-row-end small{font-size:clamp(10px,.75vw,12px)}
+html[data-theme] .atelier-eyebrow{font-size:clamp(10px,.75vw,12px)}
+html[data-theme] .atelier-page-intro p{font-size:clamp(12px,.86vw,15px)}
+html[data-theme] .studio-breadcrumb{font-size:clamp(11px,.8vw,13px)}
+html[data-theme] .studio-breadcrumb-prefix{font-size:clamp(10px,.7vw,11px)}
+html[data-theme] .atelier-quick button{font-size:clamp(11px,.8vw,13px);padding:10px 15px}
+html[data-theme] .atelier-work-heading h2{font-size:clamp(22px,1.8vw,31px)}
+@media(max-width:1260px) and (min-width:901px){
+ html[data-theme] .studio-identity{min-width:125px}
+ html[data-theme] .nav button{font-size:11px;padding:9px 9px}
+ html[data-theme] .atelier-hero-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+ html[data-theme] .atelier-hero-tile{grid-column:span 7}
+ html[data-theme] .atelier-metric-tile{grid-column:span 5}
+ html[data-theme] .atelier-stock-tile{grid-column:span 12;min-height:200px}
+ html[data-theme] .atelier-stock-rule{margin:12px 0 8px}
+}
+@media(max-width:900px){
+ html[data-theme] .studio-shell{width:100%;margin:0;min-height:100dvh;border-radius:0}
+ html[data-theme] .studio-header{padding-inline:18px}
+ html[data-theme] .studio-identity{min-width:0}
+ html[data-theme] .nav{position:fixed;justify-content:flex-start;width:100%;max-width:none;min-width:0}
+ html[data-theme] .nav button{font-size:10px}
+ html[data-theme] .topbar{padding-inline:18px}
+ html[data-theme] .content{padding-inline:18px}
+ html[data-theme] .atelier-hero-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+ html[data-theme] .atelier-hero-tile,html[data-theme] .atelier-metric-tile{grid-column:span 6;min-height:235px}
+ html[data-theme] .atelier-stock-tile{grid-column:span 12;min-height:190px}
+ html[data-theme] .atelier-register-body{grid-template-columns:1fr;min-height:0}
+ html[data-theme] .atelier-register{padding:18px}
+ html[data-theme] .atelier-invoice-list{max-height:290px}
+ html[data-theme] .atelier-invoice-detail{min-height:370px}
+}
+@media(max-width:580px){
+ html[data-theme] .studio-shell{width:100%}
+ html[data-theme] .studio-header{padding-inline:14px}
+ html[data-theme] .content{padding-inline:14px}
+ html[data-theme] .topbar{padding-inline:15px}
+ html[data-theme] .nav button{min-width:76px}
+ html[data-theme] .atelier-page-intro h1{font-size:42px}
+ html[data-theme] .atelier-hero-tile,html[data-theme] .atelier-metric-tile,html[data-theme] .atelier-stock-tile{grid-column:span 12;min-height:215px}
+ html[data-theme] .atelier-register{padding:12px}
+ html[data-theme] .atelier-register-body{grid-template-columns:1fr}
+ html[data-theme] .atelier-register-head h2{font-size:20px}
+ html[data-theme] .atelier-invoice-stats strong{font-size:25px}
+ html[data-theme] .atelier-hero-value{font-size:38px}
+ html[data-theme] .atelier-metric-value{font-size:33px}
+ html[data-theme] .atelier-stock-number{font-size:53px}
+ html[data-theme] .atelier-invoice-row{padding:12px 9px}
+}
+
 </style></head><body>
 <div class="app studio-app">
  <div class="studio-shell">
