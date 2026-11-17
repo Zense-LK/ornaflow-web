@@ -150,6 +150,10 @@ html[data-theme="dark"] .bento-card .recent-copy strong{color:var(--dark-text)}
 #customerAdvanceHint{margin:8px 0 18px}
 .summaryline strong{font-variant-numeric:tabular-nums}
 @media(max-width:650px){.cards[style*="repeat(3"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* Protected Corrections */
+.audit-json{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:320px;overflow:auto;background:#f2f3f5;color:#202124;padding:16px;border-radius:12px}
+html[data-theme="dark"] .audit-json{background:#131519;color:#e7eaf0}
 </style></head><body><div class="app"><aside class="sidebar"><div class="brand">OrnaFlow</div><div class="subbrand">Wholesale management</div><nav class="nav" id="nav"></nav><div class="sidefoot">Prototype v0.1 · Local demo</div></aside><main class="main"><header class="topbar"><div><strong id="page-label">Dashboard</strong> <small> / Overview</small></div><div class="topright"><button class="theme-toggle" id="theme-toggle" type="button" onclick="toggleOrnaTheme()" aria-label="Switch to dark mode" aria-pressed="false" title="Switch theme"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-label">Dark mode</span></button><span class="sync">● Local demo</span><span class="avatar">O</span></div></header><section class="content" id="view"></section></main></div><div class="modalbg" id="modalbg"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
 <script>
 const ORNA_THEME_KEY='ornaflow-theme-v1';
@@ -174,7 +178,7 @@ function toggleOrnaTheme(){
  updateOrnaThemeControl();
 }
 updateOrnaThemeControl();
-const KEY='ornaflow_demo_v1';const seed={products:[{id:1,sku:'ORN-001',name:'Wooden Elephant',category:'Wooden crafts',price:850,cost:550,stock:85},{id:2,sku:'ORN-002',name:'Decorative Mask',category:'Wall decor',price:1500,cost:950,stock:12},{id:3,sku:'ORN-003',name:'Coconut Shell Bowl',category:'Coconut crafts',price:650,cost:400,stock:146},{id:4,sku:'ORN-004',name:'Handmade Jewelry Box',category:'Accessories',price:2200,cost:1450,stock:33},{id:5,sku:'ORN-005',name:'Carved Wooden Turtle',category:'Wooden crafts',price:1100,cost:700,stock:54}],customers:[{id:1,name:'Ocean View Gift Shop',phone:'077 123 4567',creditDays:30},{id:2,name:'Seaside Souvenirs',phone:'071 444 9021',creditDays:14},{id:3,name:'Heritage Crafts Store',phone:'076 229 1180',creditDays:30}],invoices:[{id:1,number:'INV-0001',customerId:1,date:'2026-11-03',total:60000,items:[],status:'posted'},{id:2,number:'INV-0002',customerId:1,date:'2026-11-07',total:25000,items:[],status:'posted'},{id:3,number:'INV-0003',customerId:2,date:'2026-11-08',total:18500,items:[],status:'posted'}],payments:[{id:1,customerId:1,amount:35000,date:'2026-11-09',note:'Opening demo payment'},{id:2,customerId:2,amount:5000,date:'2026-11-10',note:'Opening demo payment'}],movements:[]};let state=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(seed);let page='dashboard',search='',cart=[],selectedCustomer='',saleMode='credit';const fmt=n=>'Rs. '+Number(n||0).toLocaleString('en-LK',{maximumFractionDigits:2}),today=()=>new Date().toISOString().slice(0,10);const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function save(){localStorage.setItem(KEY,JSON.stringify(state))}function customerName(id){return state.customers.find(c=>c.id===Number(id))?.name||'Unknown'}function netDue(id){return state.invoices.filter(i=>i.customerId===id).reduce((s,i)=>s+Number(i.total),0)-state.payments.filter(p=>p.customerId===id).reduce((s,p)=>s+Number(p.amount),0)}function due(id){return Math.max(0,netDue(id))}function advanceBalance(id){return Math.max(0,-netDue(id))}function totalDue(){return state.customers.reduce((s,c)=>s+due(c.id),0)}function toast(msg){let e=document.getElementById('toast');e.textContent=msg;e.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display='none',2600)}function modal(html){document.getElementById('modal').innerHTML=html;document.getElementById('modalbg').classList.add('show')}function closeModal(){document.getElementById('modalbg').classList.remove('show')};document.getElementById('modalbg').addEventListener('click',e=>{if(e.target.id==='modalbg')closeModal()});const navs=[['dashboard','▦','Dashboard'],['inventory','▣','Inventory'],['sales','▤','New Sale'],['customers','♙','Customers'],['payments','◈','Payments'],['reports','▥','Reports']];function navigate(p){page=p;search='';render()}function renderNav(){document.getElementById('nav').innerHTML=navs.map(([id,icon,label])=>`<button class="${page===id?'active':''}" onclick="navigate('${id}')"><span class="ico">${icon}</span><span class="navlabel">${label}</span></button>`).join('')}function heading(t,s,buttons=''){return `<div class="heading"><div><h1>${t}</h1><p class="subtitle">${s}</p></div><div>${buttons}</div></div>`}function metric(label,number,hint){return `<div class="metric"><div class="label">${label}</div><div class="number">${number}</div><div class="hint">${hint}</div></div>`}function render(){renderNav();document.getElementById('page-label').textContent=navs.find(n=>n[0]===page)?.[2]||page;document.getElementById('view').innerHTML=({dashboard:dashboard,inventory:inventory,sales:sales,customers:customers,payments:payments,reports:reports})[page]();if(page==='sales')refreshSaleSummary();}function dashboard(){
+const KEY='ornaflow_demo_v1';const seed={products:[{id:1,sku:'ORN-001',name:'Wooden Elephant',category:'Wooden crafts',price:850,cost:550,stock:85},{id:2,sku:'ORN-002',name:'Decorative Mask',category:'Wall decor',price:1500,cost:950,stock:12},{id:3,sku:'ORN-003',name:'Coconut Shell Bowl',category:'Coconut crafts',price:650,cost:400,stock:146},{id:4,sku:'ORN-004',name:'Handmade Jewelry Box',category:'Accessories',price:2200,cost:1450,stock:33},{id:5,sku:'ORN-005',name:'Carved Wooden Turtle',category:'Wooden crafts',price:1100,cost:700,stock:54}],customers:[{id:1,name:'Ocean View Gift Shop',phone:'077 123 4567',creditDays:30},{id:2,name:'Seaside Souvenirs',phone:'071 444 9021',creditDays:14},{id:3,name:'Heritage Crafts Store',phone:'076 229 1180',creditDays:30}],invoices:[{id:1,number:'INV-0001',customerId:1,date:'2026-11-03',total:60000,items:[],status:'posted'},{id:2,number:'INV-0002',customerId:1,date:'2026-11-07',total:25000,items:[],status:'posted'},{id:3,number:'INV-0003',customerId:2,date:'2026-11-08',total:18500,items:[],status:'posted'}],payments:[{id:1,customerId:1,amount:35000,date:'2026-11-09',note:'Opening demo payment'},{id:2,customerId:2,amount:5000,date:'2026-11-10',note:'Opening demo payment'}],movements:[]};let state=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(seed);let page='dashboard',search='',cart=[],selectedCustomer='',saleMode='credit';const fmt=n=>'Rs. '+Number(n||0).toLocaleString('en-LK',{maximumFractionDigits:2}),today=()=>new Date().toISOString().slice(0,10);const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function save(){localStorage.setItem(KEY,JSON.stringify(state))}function customerName(id){return state.customers.find(c=>c.id===Number(id))?.name||'Unknown'}function netDue(id){return state.invoices.filter(i=>i.customerId===id).reduce((s,i)=>s+Number(i.total),0)-state.payments.filter(p=>p.customerId===id).reduce((s,p)=>s+Number(p.amount),0)}function due(id){return Math.max(0,netDue(id))}function advanceBalance(id){return Math.max(0,-netDue(id))}function totalDue(){return state.customers.reduce((s,c)=>s+due(c.id),0)}function toast(msg){let e=document.getElementById('toast');e.textContent=msg;e.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display='none',2600)}function modal(html){document.getElementById('modal').innerHTML=html;document.getElementById('modalbg').classList.add('show')}function closeModal(){document.getElementById('modalbg').classList.remove('show')};document.getElementById('modalbg').addEventListener('click',e=>{if(e.target.id==='modalbg')closeModal()});const navs=[['dashboard','▦','Dashboard'],['inventory','▣','Inventory'],['sales','▤','New Sale'],['customers','♙','Customers'],['payments','◈','Payments'],['reports','▥','Reports']];function navigate(p){if(page==='management'&&p!=='management'&&typeof managementLock==='function')managementLock(false);page=p;search='';render()}function renderNav(){document.getElementById('nav').innerHTML=navs.map(([id,icon,label])=>`<button class="${page===id?'active':''}" onclick="navigate('${id}')"><span class="ico">${icon}</span><span class="navlabel">${label}</span></button>`).join('')}function heading(t,s,buttons=''){return `<div class="heading"><div><h1>${t}</h1><p class="subtitle">${s}</p></div><div>${buttons}</div></div>`}function metric(label,number,hint){return `<div class="metric"><div class="label">${label}</div><div class="number">${number}</div><div class="hint">${hint}</div></div>`}function render(){renderNav();document.getElementById('page-label').textContent=navs.find(n=>n[0]===page)?.[2]||page;document.getElementById('view').innerHTML=({dashboard:dashboard,inventory:inventory,sales:sales,customers:customers,payments:payments,reports:reports})[page]();if(page==='sales')refreshSaleSummary();}function dashboard(){
  const inv=state.products.reduce((sum,p)=>sum+p.cost*p.stock,0);
  const low=state.products.filter(p=>p.stock<=20);
  const salesTotal=state.invoices.reduce((sum,i)=>sum+i.total,0);
@@ -280,11 +284,13 @@ let cloudSession=JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null');
 let cloudBusy=false, cloudReady=false, cloudTimer=null, lastCloudSnapshot='';
 let pendingSaleOperation=null,pendingPaymentOperation=null;
 navs.push(['cloud','☁','Cloud setup']);
+navs.push(['management','⚙','Corrections']);
+let managementStatus=null,managementData=null,managementPassword='',managementEditor='',managementBusy=false;
 const originalRender=render, originalDashboard=dashboard;
 render=function(){
-  if(page==='cloud'){
-    renderNav();document.getElementById('page-label').textContent='Cloud setup';
-    document.getElementById('view').innerHTML=cloudPage();
+  if(page==='cloud'||page==='management'){
+    renderNav();document.getElementById('page-label').textContent=page==='cloud'?'Cloud setup':'Protected Corrections';
+    document.getElementById('view').innerHTML=page==='cloud'?cloudPage():managementPage();
   } else originalRender();
   updateCloudBadge();
 };
@@ -466,6 +472,155 @@ addPayment=async function(f){
 };
 const localResetDemo=resetDemo;
 resetDemo=function(){toast('Demo reset disabled on the cloud-connected website. Business data is unchanged.');};
+
+/* Protected Corrections — credentials only in volatile page memory; server checks every request. */
+function managementLock(redraw=true){
+ managementPassword='';managementEditor='';managementData=null;managementBusy=false;
+ if(redraw)render();
+}
+async function managementLoadStatus(){
+ if(!cloudReady){toast('Sign in to the cloud first');return}
+ try{managementStatus=await cloudRPC('orna_edit_status');render()}
+ catch(e){alert('Corrections unavailable: '+e.message)}
+}
+async function managementSetPassword(form){
+ const a=Object.fromEntries(new FormData(form));
+ if(a.newPassword!==a.confirmPassword){toast('New passwords do not match');return}
+ if(a.newPassword.length<12){toast('Use at least 12 characters');return}
+ try{
+ await cloudRPC('orna_edit_set_password',{p_new_password:a.newPassword,p_old_password:managementStatus?.configured?(a.oldPassword||null):null});
+ managementStatus={configured:true};form.reset();render();toast('Edit password configured. Unlock the page to continue.');
+ }catch(e){alert('Password not saved: '+e.message)}
+}
+async function managementUnlock(form){
+ if(managementBusy)return;
+ const a=Object.fromEntries(new FormData(form));
+ managementBusy=true;
+ try{
+  const data=await cloudRPC('orna_edit_overview',{p_password:a.password});
+  managementPassword=a.password;
+  managementEditor=a.editor.trim();
+  if(managementEditor.length<2||managementEditor.length>100){managementLock(false);throw Error('Editor name must be 2–100 characters')}
+  managementData=data;render();toast('Protected corrections unlocked');
+ }catch(e){managementLock(false);alert('Access denied: '+e.message)}
+ finally{managementBusy=false}
+}
+async function managementRefresh(){
+ if(!managementPassword||!cloudReady){managementLock();return}
+ try{managementData=await cloudRPC('orna_edit_overview',{p_password:managementPassword});render()}
+ catch(e){managementLock();alert('Editor session closed: '+e.message)}
+}
+function managementPage(){
+ if(!cloudReady)return heading('Protected corrections','Sign in to Cloud Mode to manage business records.')+
+ '<div class="notice">Cloud is not connected. Corrections are unavailable. Open Cloud Setup and sign in.</div>';
+ if(!managementStatus)return heading('Protected corrections','An owner-only area for audited inventory and transaction corrections.')+
+ '<div class="panel"><p>Set a separate edit password to protect business record changes.</p><button class="btn primary" onclick="managementLoadStatus()">Check management access</button></div>';
+ if(!managementStatus.configured)return heading('Set up edit password','Only your signed-in business owner account can configure this.')+
+ `<div class="panel" style="max-width:540px"><form onsubmit="event.preventDefault();managementSetPassword(this)">
+ <div class="field"><label>New edit password (at least 12 characters)</label><input type="password" name="newPassword" minlength="12" autocomplete="new-password" required></div>
+ <div class="field"><label>Confirm edit password</label><input type="password" name="confirmPassword" minlength="12" autocomplete="new-password" required></div>
+ <button class="btn primary">Create protected access</button></form></div>`;
+ if(!managementData)return heading('Unlock corrections','A separate password is required to edit business data.')+
+ `<div class="panel" style="max-width:540px"><div class="notice">Only the business owner can unlock corrections. Every change will be logged with the signed-in account, editor name, timestamp and reason.</div>
+ <form onsubmit="event.preventDefault();managementUnlock(this)">
+ <div class="field"><label>Editor name</label><input name="editor" required minlength="2" maxlength="100" autocomplete="name" placeholder="Your name"></div>
+ <div class="field"><label>Edit password</label><input name="password" type="password" required autocomplete="off"></div>
+ <button class="btn primary">Unlock management</button></form></div>
+ <div class="panel" style="max-width:540px"><h2>Change edit password</h2><p class="muted">The current edit password is required.</p>
+ <form onsubmit="event.preventDefault();managementSetPassword(this)"><div class="field"><label>Current edit password</label><input name="oldPassword" type="password" required></div>
+ <div class="field"><label>New password</label><input name="newPassword" type="password" minlength="12" required></div>
+ <div class="field"><label>Confirm new password</label><input name="confirmPassword" type="password" minlength="12" required></div>
+ <button class="btn">Change edit password</button></form></div>`;
+ const d=managementData;
+ return heading('Protected corrections','Signed in as '+esc(managementEditor)+' · Every saved change is audited.',
+ `<div class="quick"><button class="btn" onclick="managementRefresh()">Refresh records</button><button class="btn" onclick="managementLock()">Lock page</button></div>`)+
+ `<div class="notice"><strong>Correction mode:</strong> Financial records are not deleted. Invoice edits adjust stock and totals. Payment adjustments preserve allocation consistency. Cash-sale amounts cannot be changed here.</div>
+ <div class="panel"><div class="panelhead"><h2>Inventory · Edit products & stock</h2><span class="muted">${d.products.length} products</span></div><div class="tablewrap"><table><thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Selling price</th><th>Action</th></tr></thead><tbody>
+ ${d.products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.sku)}</td><td>${p.stock}</td><td>${fmt(p.price)}</td><td><button class="smallbtn" onclick="managementEditProduct(${p.id})">Edit</button></td></tr>`).join('')||'<tr><td colspan="5">No products</td></tr>'}
+ </tbody></table></div></div>
+ <div class="panel"><div class="panelhead"><h2>Invoices · Correct item quantities</h2><span class="muted">${d.invoices.length} invoices</span></div><div class="tablewrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Total</th><th>Type</th><th>Action</th></tr></thead><tbody>
+ ${d.invoices.map(i=>`<tr><td>${esc(i.number)}</td><td>${esc(customerName(i.customerId))}</td><td>${fmt(i.total)}</td><td>${esc(i.saleType||'credit')}</td><td><button class="smallbtn" onclick="managementEditInvoice(${i.id})">Edit lines</button></td></tr>`).join('')||'<tr><td colspan="5">No invoices</td></tr>'}
+ </tbody></table></div></div>
+ <div class="panel"><div class="panelhead"><h2>Payments · Correct amounts & details</h2><span class="muted">${d.payments.length} payments</span></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Customer</th><th>Kind</th><th>Amount</th><th>Action</th></tr></thead><tbody>
+ ${d.payments.map(p=>`<tr><td>${esc(p.date)}</td><td>${esc(customerName(p.customerId))}</td><td>${esc(p.kind)}</td><td>${fmt(p.amount)}</td><td><button class="smallbtn" onclick="managementEditPayment(${p.id})">Edit</button></td></tr>`).join('')||'<tr><td colspan="5">No payments</td></tr>'}
+ </tbody></table></div></div>
+ <div class="panel"><div class="panelhead"><h2>Change history</h2><span class="muted">Latest 100 changes</span></div><div class="tablewrap"><table><thead><tr><th>When</th><th>Editor</th><th>Record</th><th>Reason</th><th>Details</th></tr></thead><tbody>
+ ${d.audit.map(a=>`<tr><td>${esc(new Date(a.when).toLocaleString('en-LK'))}</td><td><strong>${esc(a.editor)}</strong></td><td>${esc(a.entity)} #${a.entityId}</td><td>${esc(a.reason)}</td><td><button class="smallbtn" onclick="managementAuditDetails(${a.id})">Before / After</button></td></tr>`).join('')||'<tr><td colspan="5">No corrections recorded</td></tr>'}
+ </tbody></table></div></div>`;
+}
+function managementReasonField(){return '<div class="field"><label>Reason for correction (required)</label><input name="reason" minlength="5" maxlength="500" required placeholder="E.g. Physical stock recount 17 Nov"></div>'}
+function managementEditProduct(id){
+ const p=managementData?.products.find(x=>x.id===id);if(!p)return;
+ modal(`<h2>Edit product — ${esc(p.name)}</h2><form onsubmit="event.preventDefault();managementSaveProduct(this,${p.id})">
+ <div class="grid2"><div class="field"><label>Product name</label><input name="name" value="${esc(p.name)}" required></div>
+ <div class="field"><label>SKU</label><input name="sku" value="${esc(p.sku)}" required></div>
+ <div class="field"><label>Category</label><input name="category" value="${esc(p.category)}"></div>
+ <div class="field"><label>Stock quantity</label><input name="stock" type="number" min="0" step="1" value="${p.stock}" required></div>
+ <div class="field"><label>Selling price</label><input name="price" type="number" min="0" step=".01" value="${p.price}" required></div>
+ <div class="field"><label>Purchase cost</label><input name="cost" type="number" min="0" step=".01" value="${p.cost}" required></div></div>
+ ${managementReasonField()}<div class="hintcard">Changing stock creates a traceable adjustment entry, not a hidden overwrite.</div>
+ <div class="actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn primary">Save correction</button></div></form>`);
+}
+function managementEditInvoice(id){
+ const i=managementData?.invoices.find(x=>x.id===id);if(!i)return;
+ modal(`<h2>Correct invoice ${esc(i.number)}</h2><p class="muted">Choose a line to adjust. The invoice total and stock will be recalculated.</p>
+ ${i.items.map(line=>`<div class="item-row"><div><strong>${esc(managementData.products.find(p=>p.id===line.productId)?.name||'Product #'+line.productId)}</strong><div class="muted">Qty ${line.qty} × ${fmt(line.price)}</div></div>
+ <button class="smallbtn" onclick="managementEditInvoiceLine(${i.id},${line.id})">Correct quantity</button></div>`).join('')||'<p>No invoice items</p>'}
+ <div class="actions"><button class="btn" onclick="closeModal()">Close</button></div>`);
+}
+function managementEditInvoiceLine(id,lineId){
+ const i=managementData?.invoices.find(x=>x.id===id),line=i?.items.find(x=>x.id===lineId);if(!line)return;
+ modal(`<h2>Correct ${esc(i.number)} · Line #${line.id}</h2><form onsubmit="event.preventDefault();managementSaveInvoiceLine(this,${id},${lineId})">
+ <div class="field"><label>Correct quantity</label><input name="qty" type="number" min="1" step="1" value="${line.qty}" required></div>
+ <p class="muted">Unit price: ${fmt(line.price)}. Cash invoices cannot be changed to an unpaid balance.</p>
+ ${managementReasonField()}<div class="actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn primary">Save invoice correction</button></div></form>`);
+}
+function managementEditPayment(id){
+ const p=managementData?.payments.find(x=>x.id===id);if(!p)return;
+ const fixed=p.kind==='sale_cash'||p.kind==='sale_advance';
+ modal(`<h2>Edit payment #${p.id}</h2><form onsubmit="event.preventDefault();managementSavePayment(this,${p.id})">
+ <div class="field"><label>Amount (LKR)</label><input name="amount" type="number" min=".01" step=".01" value="${p.amount}" ${fixed?'readonly':''} required></div>
+ <div class="grid2"><div class="field"><label>Received date</label><input name="date" type="date" value="${esc(p.date)}" required></div>
+ <div class="field"><label>Payment method</label><select name="method">
+ ${['cash','bank','other'].map(m=>`<option value="${m}" ${p.method===m?'selected':''}>${m}</option>`).join('')}</select></div></div>
+ <div class="field"><label>Note</label><input name="note" value="${esc(p.note||'')}"></div>
+ ${managementReasonField()}
+ <p class="muted">${fixed?'The amount of a sale-linked payment is locked; date, method and note can be corrected.':'Changing an amount recalculates the payment allocations. Excess ordinary collections are rejected.'}</p>
+ <div class="actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn primary">Save payment correction</button></div></form>`);
+}
+function managementAuditDetails(id){
+ const a=managementData?.audit.find(x=>x.id===id);if(!a)return;
+ modal(`<h2>Audit event #${id}</h2><p class="muted">Editor: ${esc(a.editor)} · ${esc(a.reason)}</p>
+ <h2 style="margin-top:20px">Before</h2><pre class="audit-json">${esc(JSON.stringify(a.before,null,2))}</pre>
+ <h2 style="margin-top:20px">After</h2><pre class="audit-json">${esc(JSON.stringify(a.after,null,2))}</pre>
+ <button class="btn" onclick="closeModal()">Close</button>`);
+}
+async function managementMutation(rpc,args){
+ if(!managementPassword||managementBusy)return;
+ managementBusy=true;
+ try{
+  await cloudRPC(rpc,{p_password:managementPassword,p_editor:managementEditor,...args});
+  closeModal();
+  await cloudLoad();
+  await managementRefresh();
+  toast('Correction saved with audit history');
+ }catch(e){alert('Correction NOT saved: '+e.message)}
+ finally{managementBusy=false}
+}
+function managementSaveProduct(form,id){
+ const a=Object.fromEntries(new FormData(form));
+ managementMutation('orna_edit_product',{p_id:id,p_name:a.name,p_sku:a.sku,p_category:a.category,p_price:Number(a.price),p_cost:Number(a.cost),p_stock:Number(a.stock),p_reason:a.reason});
+}
+function managementSaveInvoiceLine(form,id,lineId){
+ const a=Object.fromEntries(new FormData(form));
+ managementMutation('orna_edit_invoice_item',{p_invoice_id:id,p_line_id:lineId,p_quantity:Number(a.qty),p_reason:a.reason});
+}
+function managementSavePayment(form,id){
+ const a=Object.fromEntries(new FormData(form));
+ managementMutation('orna_edit_payment',{p_payment_id:id,p_amount:Number(a.amount),p_date:a.date,p_method:a.method,p_note:a.note,p_reason:a.reason});
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&managementPassword){managementLock(page==='management');}});
+
 // Restore account session when reopening the same browser.
 if(cloudConfig&&cloudSession){page='cloud';cloudLoad()}
 else if(cloudConfig){page='cloud'}
